@@ -10,6 +10,7 @@ import Foundation
 class Game {
     
     init(numberOfPairsOfCards: Int) {
+        assert(numberOfPairsOfCards > 0, "numberOfPairsOfCards must be higher than 0")
         for _ in 1...numberOfPairsOfCards {
             let card = Card()
             cards.append(card)
@@ -19,11 +20,11 @@ class Game {
         }
     }
     
-    func mashupCards() {
+    private func mashupCards() {
         var randomizeFirst = 0
         var randomizeSecond = 0
         while randomizeFirst == randomizeSecond {
-            if  cards.count > 2{
+            if  cards.count > 2 {
             randomizeFirst = Int(arc4random_uniform(UInt32(cards.count)))
             randomizeSecond = Int(arc4random_uniform(UInt32(cards.count)))
                 let bridge = cards[randomizeFirst]
@@ -34,9 +35,28 @@ class Game {
             }
         }
     }
-    var cards = [Card]()
+    private(set) var cards = [Card]()
     
-    var indexOfOneReversedCard: Int?
+    private var indexOfOneReversedCard: Int? {
+        get {
+            var foundIndex: Int?
+            for index in cards.indices {
+                if cards[index].isFaceUp {
+                    if foundIndex == nil {
+                        foundIndex = index
+                    } else {
+                        return nil
+                    }
+                }
+            }
+            return foundIndex
+        }
+        set {
+            for index in cards.indices {
+                cards[index].isFaceUp = (index == newValue)
+            }
+        }
+    }
     
     func chooseCard(at index: Int) {
         if !cards[index].isMatch {
@@ -46,12 +66,7 @@ class Game {
                     cards[matchingIndex].isMatch = true
                 }
                 cards[index].isFaceUp = true
-                indexOfOneReversedCard = nil
             }  else {
-                for i in cards.indices {
-                    cards[i].isFaceUp = false
-                }
-                cards[index].isFaceUp = true
                 indexOfOneReversedCard = index
             }
         }
