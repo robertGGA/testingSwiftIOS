@@ -61,7 +61,7 @@ class Game {
     func chooseCard(at index: Int) {
         if !cards[index].isMatch {
             if let matchingIndex = indexOfOneReversedCard, matchingIndex != index {
-                if cards[matchingIndex].identifier == cards[index].identifier {
+                if cards[matchingIndex] == cards[index] {
                     cards[index].isMatch = true
                     cards[matchingIndex].isMatch = true
                 }

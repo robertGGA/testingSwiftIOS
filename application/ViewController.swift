@@ -17,15 +17,26 @@ class ViewController: UIViewController {
         }
     }
     
+    private func labelSettings() -> Void {
+        let attributies: [NSAttributedString.Key: Any] = [
+            .strokeColor: UIColor.red,
+            .strokeWidth: 5.0
+        ]
+        let attributedString = NSAttributedString(string: "Touches: \(touches)", attributes: attributies)
+        counterLabel.attributedText = attributedString
+        
+    }
+
+    
    private(set) var touches = 0 {
         didSet {
-            counterLabel.text = "Touches: \(touches)"
+            labelSettings()
         }
     }
     
     private var emojiCollection = ["🦊", "🐻", "🐻‍❄️", "🐷", "🦆", "🐒", "🐗"]
     
-    private var emojiDictionary = [Int: String]()
+    private var emojiDictionary = [Card: String]()
     
     private func updateViewFromModal() {
         for index in buttonCollection.indices {
@@ -43,15 +54,19 @@ class ViewController: UIViewController {
     }
     
     private func emojiCard(for card: Card) -> String {
-        if emojiDictionary[card.identifier] == nil {
+        if emojiDictionary[card] == nil {
             let randomIndex = Int(arc4random_uniform(UInt32(emojiCollection.count)))
-            emojiDictionary[card.identifier] = emojiCollection.remove(at: randomIndex)
+            emojiDictionary[card] = emojiCollection.remove(at: randomIndex)
         }
-        return emojiDictionary[card.identifier] ?? "?"
+        return emojiDictionary[card] ?? "?"
     }
 
 
-    @IBOutlet private weak var counterLabel: UILabel!
+    @IBOutlet private weak var counterLabel: UILabel! {
+        didSet {
+            labelSettings()
+        }
+    }
     
     @IBOutlet private var buttonCollection: [UIButton]!
     
